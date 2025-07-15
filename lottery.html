@@ -27,15 +27,20 @@
 
       <!-- Lottery Form -->
       <form action="" id="betform">
-        <div class="stake-and-buttons">
+        <!-- Stake Container -->
+        <div class="stake-container">
           <div class="stake-and-alerts">
-            <div class="stake-container">
+            <!-- stake amount container -->
+            <div class="stake-amount-container">
+              <!-- stake label -->
               <label for="stake-amount" class="stake-input-label"><b>Enter Amount To Stake :</b></label>
-              <div class="amount">
-                <b>$</b>
-                <input class="stake-amount" type="number" id="stake-amount" min="10" placeholder="">  
+              <div class="amount-container">
+                <b>$</b> 
+                <input class="stake-amount" type="number" id="stake-amount" min="10">  
               </div>
             </div>
+
+            <!-- stake error alerts container -->
             <div class="alert-container">
               <h5 class="insufficient-funds">Insufficient Funds!!!</h5>
               <h5 class="insufficient-stake">Increase Your Stake!!!</h5>
@@ -43,7 +48,7 @@
           </div>
 
           <!-- Buttons to increase stake amount -->
-          <div class="buttons">
+          <div class="increment-buttons">
             <button class="stake-increment" type="button" value="10">+10</button>
             <button class="stake-increment" type="button" value="50">+50</button>
             <button class="stake-increment" type="button" value="100">+100</button>
@@ -54,21 +59,24 @@
             <button class="stake-increment" type="button" value="0">Clear</button>
           </div>
         </div>
+        <!-- stake container end -->
 
         <!-- Selecting lucky numbers -->
         <div class="choose-numbers">
-          <label for="1" class="choose">Choose 3 Numbers :</label>
-          <input type="number" class="selections" name="1" id="1" min="1" max="4" step="1" required>
-          <input type="number" class="selections" name="2" id="2" min="1" max="4" step="1" required>
-          <input type="number" class="selections" name="3" id="3" min="1" max="4" step="1" required>
+          <p class="choose" tabindex="0">Choose 3 Numbers :</p>
+          <input type="number" class="selections" id="num1" name="num1" min="1" max="4" step="1" required aria-label="choose 1st number from 1-3" />
+          <input type="number" class="selections" id="num2" name="num2" min="1" max="4" step="1" required aria-label="choose 2nd number from 1-3" />
+          <input type="number" class="selections" id="num3" name="num3" min="1" max="4" step="1" required aria-label="choose 3rd number from 1-3" />
         </div>
 
         <!-- Random outcomes -->
         <div class="outcomes-div">
-          <span class="outcome-label">How lucky are you?</span>
-          <span class="outcomes" id="outcome-1">?</span>
-          <span class="outcomes" id="outcome-2">?</span>
-          <span class="outcomes" id="outcome-3">?</span>
+          <span class="outcome-label">Results</span>
+          <!-- Hidden from sight but not from screen readers -->
+          <span id="announcement" aria-live="assertive" aria-atomic="true" style="position: absolute; left: -9999px;"></span>
+          <span class="outcomes" id="outcome-1" aria-live="polite">?</span>
+          <span class="outcomes" id="outcome-2" aria-live="polite">?</span>
+          <span class="outcomes" id="outcome-3" aria-live="polite">?</span>
         </div>
 
         <!-- Play and reset buttons -->
@@ -79,9 +87,6 @@
       </form>
     </section>
   </main>
-
-  <label for="time" class="time"></label>
-
   <script src="lottery.js"></script>
 </body>
 </html>

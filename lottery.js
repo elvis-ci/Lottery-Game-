@@ -2,15 +2,15 @@ const game = document.forms['betform'];
 const play = document.querySelector('button[type=submit')
 const reset = document.querySelector('button[type=reset')
 const accountBalance = document.querySelector('.balance');
-const stakeDiv = document.querySelector('.stake-and-buttons')
-const stakebtnsDiv = document.querySelector('.buttons')
+const stakeDiv = document.querySelector('.stake-container')
+const stakebtnsDiv = document.querySelector('.increment-buttons')
 const stakebtns= document.querySelectorAll('.stake-increment');
 const stakeAmount = document.querySelector('.stake-amount');
 const selection = document.querySelectorAll('.selections');
 const outcomes = document.querySelectorAll('.outcomes');
 const balanceAlert = document.querySelector('.insufficient-funds');
 const stakeAlert = document.querySelector('.insufficient-stake');
-const stakeContainer = document.querySelector('.amount')
+const stakeContainer = document.querySelector('.amount-container')
 
 stakebtnsDiv.style.display='none';
 // Display the buttons for increasing stake amount
@@ -39,6 +39,7 @@ stakebtns.forEach(btns =>{
 });
 
 let newCalculatedBalance; // variable to store the new balance after the game
+let result = document.getElementById('announcement');
 
 // form field behaviour
 game.addEventListener('submit', e => {
@@ -54,12 +55,15 @@ game.addEventListener('submit', e => {
     
       // Array of generated numbers for lottery outcomes
       const generatedNumbers= [];
-      let initialBalance = Number(accountBalance.textContent.trim());  
-  
+      let initialBalance = Number(accountBalance.textContent.trim());
+      function announceResult(result){
+        result.textContent="Results are"
+      }
       for(let i = 0; i<selection.length && i<outcomes.length; i++){
         generatedNumbers[i] = Math.ceil(Math.random() * 3);
         // Display generated numbers as outcomes one after the other
         setTimeout(() =>{
+          announceResult(result)
           outcomes[i].innerText = generatedNumbers[i];
           if(selection[i].value == generatedNumbers[i]){
             selection[i].style.border = '2px solid greenyellow'
@@ -83,7 +87,7 @@ game.addEventListener('submit', e => {
       const S2 = selection[1].value;
       const S3 = selection[2].value;
 
-      // Increment the balance gradually
+      // Increment the balance gradually every 1 millisecond
       function balanceIncrement (){ setInterval(() => {
         if (initialBalance < newCalculatedBalance) {
           initialBalance += 10; // Increment by 10
@@ -102,7 +106,7 @@ game.addEventListener('submit', e => {
           clearInterval(balanceIncrement);
           accountBalance.textContent = newCalculatedBalance; // Ensure it stops exactly at the target
         }
-      }, 1)}; // Update every 1 millisecond
+      }, 1)};
 
       // Check the outcomes after 4.5 seconds. (2/3 = 50% cashback, 3/3 = stake * 10)
       setTimeout(() => {
@@ -127,6 +131,7 @@ game.addEventListener('submit', e => {
     // callback beep function and display stake alert
     warning(stakeAlert, beep)
   }
+  
   // stake input field beep red when invalid stake amount or insufficient balance
   function beep(){
     if(stakeContainer.style.border== '' || stakeContainer.style.border== '0.5px solid black'){
@@ -165,6 +170,7 @@ reset.addEventListener('click', e =>{
     outcomes[i].innerText= '?'
   }
 
+  result.textContent=''
   stakeContainer.style.border=''
   play.style.display= 'block';
   reset.style.display='none';
