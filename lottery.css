@@ -177,7 +177,7 @@ p.insufficient-funds {
 
 span.outcome-label{
   font-weight: bold;
-  color: #d34444;
+  color: #872e2e;
   font-size: 0.9em;
 }
 
@@ -203,18 +203,19 @@ span.outcome-label{
 }
 
 button.draw {
-  background-color: #7ec8c2;
+  background-color: #60dfd5;
   color: #fff;
   padding: 10px 20px;
-  font-size: 1em;
+  font-size: large;
+  font-weight: bold;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-button.draw:hover {
-  background-color: #4db8a8;
+button.draw:hover, button.draw:focus {
+  background-color: #3a9587;
 }
 
 button[type="reset"] {
@@ -227,8 +228,9 @@ button[type="reset"] {
   display: none;
 }
 
-button[type="reset"]:hover {
-  background-color: #f1b0b7;
+button[type="reset"]:hover, button[type="reset"]:focus {
+  background-color: #ff939e;
+  color: rgb(20, 20, 20);
 }
 
 .sr-only {

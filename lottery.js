@@ -3,6 +3,7 @@ const stakebtnsDiv = document.querySelector('.increment-buttons')
 const stakeAmount = document.querySelector('.stake-amount');
 const alertMsg = document.querySelector('.insufficient-funds');
 const stakeContainer = document.querySelector('.amount-container')
+
 // hide stake increment buttons container on page load
 stakebtnsDiv.style.display='none';
 
@@ -156,7 +157,6 @@ game.addEventListener('submit', e => {
   //beep behaviour: every 3milisecs and clear beep after 5secs
   function warning(alertTxt, funct, errorMsg){
     const beepInterval = setInterval(funct , 300);
-
     //clear balance beep effect after 5secs   
     setTimeout(()=>{
       clearInterval(beepInterval);
