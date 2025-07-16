@@ -8,30 +8,31 @@ const stakebtns= document.querySelectorAll('.stake-increment');
 const stakeAmount = document.querySelector('.stake-amount');
 const selection = document.querySelectorAll('.selections');
 const outcomes = document.querySelectorAll('.outcomes');
-const balanceAlert = document.querySelector('.insufficient-funds');
-const stakeAlert = document.querySelector('.insufficient-stake');
+const alertMsg = document.querySelector('.insufficient-funds');
 const stakeContainer = document.querySelector('.amount-container')
+const account = document.querySelector('.account')
 
+// hide stake increment buttons on page load
 stakebtnsDiv.style.display='none';
-// Display the buttons for increasing stake amount
+
+// Display stake increment buttons when stake input field is clicked
 stakeAmount.addEventListener('click', e=>{
   stakeContainer.style.border= '0.5px solid black';
 
-  // remove stake increment buttons when stake input field is readonly(after submitting)
+  // remove stake increment buttons when stake input field is readonly (after submitting)
   stakeAmount.hasAttribute('readonly')? stakebtnsDiv.style.display='none'
   :(stakeDiv.style.height = 'fit-content', stakebtnsDiv.style.display='flex');
   
   // remove insufficient-stake and insufficient-funds alerts when stake amount is clicked
-  stakeAlert.style.display== 'block'? stakeAlert.style.display= 'none'
-  :balanceAlert.style.display== 'block'? balanceAlert.style.display= 'none'
+  alertMsg.style.display== 'block'? alertMsg.style.display= 'none'
   :''
 });
 
-// stake increment buttons behaviour
+// add each increment button's value to the current stake amount or reset to 0 when value is 0
 stakebtns.forEach(btns =>{
   btns.addEventListener('click', f=>{
     f.preventDefault()
-    let currentStakeAmount = Number(stakeAmount.value);
+    let currentStakeAmount = Number(stakeAmount.value); // sets stake amout to a number to enamble math operation
     btns.value>0? stakeAmount.value = currentStakeAmount + Number(btns.value)
     :(btns.value == "00" && currentStakeAmount > 0)? stakeAmount.value = currentStakeAmount + "" + btns.value
     :stakeAmount.value = 0
@@ -39,31 +40,34 @@ stakebtns.forEach(btns =>{
 });
 
 let newCalculatedBalance; // variable to store the new balance after the game
-let result = document.getElementById('announcement');
+let resultAnnouncer = document.getElementById('announcement'); // result announcement for screen readers
 
-// form field behaviour
+// form field behaviour on submit
 game.addEventListener('submit', e => {
   e.preventDefault();
   stakeDiv.style.height = '20px';
   stakebtnsDiv.style.display='none';   
+  alertMsg.textContent='' // set balance alert message to empty (allows aria-live attribute to read and announce change with screen reader)
 
-  // if stake amount has value greater than 10
+  // checks if stake amount is greater than 10
   if(stakeAmount.value && stakeAmount.value >= 10){
-    // if stake amount is less than or equal to available balance
+    // checks if stake amount is less than or equal to available balance
     if(stakeAmount.value <= Number(accountBalance.textContent)){
-      stakeAmount.setAttribute('readonly', true);
+      stakeAmount.setAttribute('readonly', true); // set stake input field to readonly (prevents editing after submitting)
     
-      // Array of generated numbers for lottery outcomes
-      const generatedNumbers= [];
-      let initialBalance = Number(accountBalance.textContent.trim());
-      function announceResult(result){
-        result.textContent="Results are"
-      }
+     
+      const generatedNumbers= [];  // defines empty Array for generated numbers for lottery outcomes
+      let initialBalance = Number(accountBalance.textContent.trim()); // defines initial balance when form is submitted
+
+      //changes textContent of screen reader result announcement 
+      function announceResult(resultAnnouncer){ resultAnnouncer.textContent="Results are"}
+
+      
       for(let i = 0; i<selection.length && i<outcomes.length; i++){
         generatedNumbers[i] = Math.ceil(Math.random() * 3);
         // Display generated numbers as outcomes one after the other
         setTimeout(() =>{
-          announceResult(result)
+          announceResult(resultAnnouncer)
           outcomes[i].innerText = generatedNumbers[i];
           if(selection[i].value == generatedNumbers[i]){
             selection[i].style.border = '2px solid greenyellow'
@@ -120,18 +124,26 @@ game.addEventListener('submit', e => {
           newCalculatedBalance = initialBalance - stakeAmount.value;
           balanceIncrement() // Increment the balance depending on the outcome
         }
+        play.style.display= 'none';
+        reset.style.display='block';
+
+        reset.focus();
+
       }, 4500);      
-      play.style.display= 'none';
-      reset.style.display='block';
     }else{
-      // callback beep function and display balance alert
-      warning(balanceAlert, beep)
+      // display insufficient balance and annouce on screen reader
+      setTimeout(()=>{
+        warning(alertMsg, beep, "Insufficient Balance!!!")
+      }, 300)
+
     }
   }else{
     // callback beep function and display stake alert
-    warning(stakeAlert, beep)
+    setTimeout(()=>{
+      warning(alertMsg, beep, "Increase Your Stake!!!")
+    }, 300)
   }
-  
+
   // stake input field beep red when invalid stake amount or insufficient balance
   function beep(){
     if(stakeContainer.style.border== '' || stakeContainer.style.border== '0.5px solid black'){
@@ -142,7 +154,7 @@ game.addEventListener('submit', e => {
   };
 
   //beep behaviour: every 3milisecs and clear beep after 5secs
-  function warning(alertTxt, funct){
+  function warning(alertTxt, funct, errorMsg){
     const beepInterval = setInterval(funct , 300);
 
     //clear balance beep effect after 5secs   
@@ -150,7 +162,11 @@ game.addEventListener('submit', e => {
       clearInterval(beepInterval);
     }, 5000)
     stakeContainer.style.border= '2px solid red';
-    alertTxt.style.display='block';  
+    alertTxt.focus();
+    alertTxt.textContent= errorMsg
+    setTimeout(()=>{
+      stakeAmount.focus();
+    }, 4000)
   };
 });
 
@@ -159,9 +175,10 @@ reset.addEventListener('click', e =>{
   e.preventDefault();
   game.reset();
   stakeAmount.removeAttribute('readonly'); //remove readonly attribute from stake input field
-  stakeAmount.value = 0;
-  balanceAlert.style.display='none';
-  stakeAlert.style.display='none';
+  stakeAmount.value = '';
+  // alertMsg.style.display='none';
+  // alertMsg.textContent= '';
+  account.focus();
 
   // Reset the selection and outcomes fields
   for(let i = 0; i<selection.length && i<outcomes.length; i++){
@@ -170,7 +187,7 @@ reset.addEventListener('click', e =>{
     outcomes[i].innerText= '?'
   }
 
-  result.textContent=''
+  resultAnnouncer.textContent=''
   stakeContainer.style.border=''
   play.style.display= 'block';
   reset.style.display='none';

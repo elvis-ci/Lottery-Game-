@@ -113,11 +113,11 @@ input.stake-amount {
   max-width: 88%;
 }
 
-h5.insufficient-funds, h5.insufficient-stake {
+p.insufficient-funds {
   font-size: 0.7em;
   color: red;
-  display: none;
   text-align: end;
+  font-weight: bold;
 }
 
 .increment-buttons {
