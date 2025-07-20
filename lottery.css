@@ -82,6 +82,7 @@ header p{
 }
 
 .stake-amount-container{
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: end;
@@ -91,6 +92,10 @@ header p{
   font-size: 1em;
   color: #555;
   padding-right: 10px;
+  align-self: flex-end;
+}
+.stake-input-label span{
+  font-size: 12px;
 }
 
 .amount-container {
@@ -145,11 +150,12 @@ p.insufficient-funds {
 }
 
 .choose-numbers {
-  margin-top: 20px;
+  margin-top: 50px;
   display: flex;
   justify-content: end;
   align-items: center;
   border: 0;
+  margin-bottom: 35px;
 }
 
 .choose-numbers input {
